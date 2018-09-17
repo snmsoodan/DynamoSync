@@ -1,0 +1,273 @@
+{
+  "service": {
+    "service": "sanamdeep-serverless",
+    "serviceObject": {
+      "name": "sanamdeep-serverless"
+    },
+    "provider": {
+      "stage": "dev",
+      "region": "us-east-1",
+      "variableSyntax": "\\${([ ~:a-zA-Z0-9._'\",\\-\\/\\(\\)]+?)}",
+      "name": "aws",
+      "runtime": "nodejs8.10",
+      "deploymentBucket": "serverless-deployment-sanam-dev",
+      "profile": "default",
+      "stackName": "sanamdeep-serverless-stack-dev",
+      "stackTags": {
+        "Name": "sanamdeep"
+      },
+      "versionFunctions": true,
+      "remoteFunctionData": null,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "CFN stack for sanamdeep-serverless",
+        "Resources": {
+          "SanamCftLambdaLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/sanamdeepCftLambda-dev"
+            }
+          },
+          "SanamCftLambdaLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-deployment-sanam-dev",
+                "S3Key": "serverless/sanamdeep-serverless/dev/1537149336347-2018-09-17T01:55:36.347Z/sanamdeep-serverless.zip"
+              },
+              "FunctionName": "sanamdeepCftLambda-dev",
+              "Handler": "/src/worker/sanamdeepCftLambda.handler",
+              "MemorySize": 512,
+              "Role": {
+                "Fn::GetAtt": [
+                  "DynamoSyncUpLambdaRole",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs8.10",
+              "Timeout": 200,
+              "Description": "My first Lambda created through CFN - serverless"
+            },
+            "DependsOn": [
+              "SanamCftLambdaLogGroup",
+              "DynamoSyncUpLambdaRole"
+            ]
+          },
+          "SanamCftLambdaLambdaVersionm9ryis1Jdu3f33RMbzVz0phnaUOlCbSTVtcn5gz24": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "SanamCftLambdaLambdaFunction"
+              },
+              "CodeSha256": "yB4f6nBgPALL51okplVbi4lIWRAlWBwDkbGKyVZ+bi4=",
+              "Description": "My first Lambda created through CFN - serverless"
+            }
+          },
+          "DynamoSyncUpLambdaRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "RoleName": "sanamdeep-serverless-dev",
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": "sts:AssumeRole"
+                  }
+                ]
+              },
+              "Path": "/",
+              "Policies": [
+                {
+                  "PolicyName": "cloudwatch-policy",
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogGroup",
+                          "logs:CreateLogStream",
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": {
+                          "Fn::Join": [
+                            ":",
+                            [
+                              "arn:aws:logs",
+                              "us-east-1",
+                              "265960775968",
+                              "*"
+                            ]
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "PolicyName": "lambda-policy",
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "lambda:InvokeFunction"
+                        ],
+                        "Resource": {
+                          "Fn::Join": [
+                            ":",
+                            [
+                              "arn:aws:lambda",
+                              "us-east-1",
+                              "265960775968",
+                              "function:sanamdeepCftLambda-dev"
+                            ]
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": "serverless-deployment-sanam-dev"
+          },
+          "SanamCftLambdaLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "SanamCftLambdaLambdaVersionm9ryis1Jdu3f33RMbzVz0phnaUOlCbSTVtcn5gz24"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "custom": {
+      "stageVars": {
+        "envName": "dev",
+        "serverlessDeploymentBucket": "serverless-deployment-sanam-dev",
+        "region": "us-east-1",
+        "awsAccountId": "265960775968",
+        "tags": {
+          "$ref": "$[\"service\"][\"provider\"][\"stackTags\"]"
+        }
+      }
+    },
+    "pluginsData": {},
+    "functions": {
+      "sanamCftLambda": {
+        "role": "DynamoSyncUpLambdaRole",
+        "handler": "/src/worker/sanamdeepCftLambda.handler",
+        "onError": null,
+        "name": "sanamdeepCftLambda-dev",
+        "description": "My first Lambda created through CFN - serverless",
+        "events": [],
+        "memorySize": 512,
+        "timeout": 200,
+        "tags": null,
+        "package": {},
+        "memory": 512,
+        "runtime": "nodejs8.10",
+        "vpc": {}
+      }
+    },
+    "resources": {
+      "Description": "CFN stack for sanamdeep-serverless",
+      "Resources": {
+        "DynamoSyncUpLambdaRole": {
+          "Type": "AWS::IAM::Role",
+          "Properties": {
+            "RoleName": "sanamdeep-serverless-dev",
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": [
+                      "lambda.amazonaws.com"
+                    ]
+                  },
+                  "Action": "sts:AssumeRole"
+                }
+              ]
+            },
+            "Path": "/",
+            "Policies": [
+              {
+                "PolicyName": "cloudwatch-policy",
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "logs:CreateLogGroup",
+                        "logs:CreateLogStream",
+                        "logs:PutLogEvents"
+                      ],
+                      "Resource": {
+                        "Fn::Join": [
+                          ":",
+                          [
+                            "arn:aws:logs",
+                            "us-east-1",
+                            "265960775968",
+                            "*"
+                          ]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "PolicyName": "lambda-policy",
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "lambda:InvokeFunction"
+                      ],
+                      "Resource": {
+                        "Fn::Join": [
+                          ":",
+                          [
+                            "arn:aws:lambda",
+                            "us-east-1",
+                            "265960775968",
+                            "function:sanamdeepCftLambda-dev"
+                          ]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "Outputs": {}
+    },
+    "artifact": "C:\\Users\\Sanamdeep Singh\\Desktop\\aws-serverless\\.serverless\\sanamdeep-serverless.zip"
+  },
+  "package": {
+    "artifactDirectoryName": "serverless/sanamdeep-serverless/dev/1537149336347-2018-09-17T01:55:36.347Z",
+    "artifact": "sanamdeep-serverless.zip"
+  }
+}

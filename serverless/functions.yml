@@ -1,0 +1,11 @@
+sanamCftLambda:
+  role: DynamoSyncUpLambdaRole
+  handler: /src/worker/sanamdeepCftLambda.handler
+  onError:
+  name: sanamdeepCftLambda-${self:custom.stageVars.envName}
+  description: My first Lambda created through CFN - serverless
+  events:
+  memorySize: 512
+  timeout: 200
+  tags:
+    

@@ -1,0 +1,6 @@
+envName: dev
+serverlessDeploymentBucket: serverless-deployment-sanam-dev
+region: us-east-1
+awsAccountId: '265960775968'
+tags:
+  Name: 'sanamdeep'

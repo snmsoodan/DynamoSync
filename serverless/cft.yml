@@ -1,0 +1,46 @@
+Description: CFN stack for ${self:service}
+Resources: 
+  DynamoSyncUpLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ${self:service}-${self:custom.stageVars.envName}
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: 
+                - lambda.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Path: '/'
+      Policies:
+        - PolicyName: 'cloudwatch-policy'
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: 
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: 
+                  Fn::Join:
+                    - ':'
+                    - - arn:aws:logs
+                      - ${self:custom.stageVars.region}
+                      - ${self:custom.stageVars.awsAccountId}
+                      - '*'
+        - PolicyName: 'lambda-policy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource:
+                  Fn::Join:
+                    - ':'
+                    - - arn:aws:lambda
+                      - ${self:custom.stageVars.region}
+                      - ${self:custom.stageVars.awsAccountId}
+                      - function:${self:functions.sanamCftLambda.name}
